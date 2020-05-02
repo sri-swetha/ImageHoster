@@ -10,6 +10,13 @@ public class Image {
     private String description;
     private Date date;
 
+    public Image(Integer id, String title, String imageFile, Date date) {
+        this.id = id;
+        this.title = title;
+        this.imageFile = imageFile;
+        this.date = date;
+    }
+
     public Image(Integer id, String title, String imageFile, String description, Date date) {
         this.id = id;
         this.title = title;
@@ -18,14 +25,8 @@ public class Image {
         this.date = date;
     }
 
-    public Image(Integer id, String title, String imageFile, Date date) {
-        this.id = id;
-        this.title = title;
-        this.imageFile = imageFile;
-        this.date = date;
+    public Image() {
     }
-
-    //Write the constructor for all the attributes of the image
 
     public Integer getId() {
         return id;
