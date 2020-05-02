@@ -8,6 +8,7 @@ public class UserProfile {
     private String emailAddress;
     private String mobileNumber;
 
+
     public Integer getId() {
         return id;
     }
@@ -39,5 +40,4 @@ public class UserProfile {
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
-//Generate getters and setters for all the attributes
 }

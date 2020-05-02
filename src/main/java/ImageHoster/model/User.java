@@ -39,6 +39,5 @@ public class User {
     public void setProfile(UserProfile profile) {
         this.profile = profile;
     }
-//Genarate getters and setters for all the attributes
 }
 
