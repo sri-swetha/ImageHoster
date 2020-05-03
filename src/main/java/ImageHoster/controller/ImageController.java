@@ -94,7 +94,6 @@ public class ImageController {
     @RequestMapping(value = "/editImage")
     public String editImage(@RequestParam("imageId") Integer imageId, Model model,HttpSession session) {
         Image image = imageService.getImage(imageId);
-
         String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
         model.addAttribute("tags", tags);
@@ -149,7 +148,19 @@ public class ImageController {
     //The method calls the deleteImage() method in the business logic passing the id of the image to be deleted
     //Looks for a controller method with request mapping of type '/images'
     @RequestMapping(value = "/deleteImage", method = RequestMethod.DELETE)
-    public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId) {
+    public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId,HttpSession session,Model model) {
+        Image image = imageService.getImage(imageId);
+        String tags = convertTagsToString(image.getTags());
+        model.addAttribute("image", image);
+        model.addAttribute("tags", tags);
+        String error = "Only the owner of the image can delete the image";
+        User user = (User) session.getAttribute("loggeduser");
+        System.out.println("Logged in user :"+user.getId());
+        System.out.println("Image in user :"+image.getUser().getId());
+        if(!(user.getId().equals(image.getUser().getId()))){
+            model.addAttribute("deleteError", error);
+            return "images/image";
+        }
         imageService.deleteImage(imageId);
         return "redirect:/images";
     }
