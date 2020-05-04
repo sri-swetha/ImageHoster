@@ -94,9 +94,7 @@ public class ImageController {
     @RequestMapping(value = "/editImage")
     public String editImage(@RequestParam("imageId") Integer imageId, Model model,HttpSession session) {
         Image image = imageService.getImage(imageId);
-        String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
-        model.addAttribute("tags", tags);
         String error = "Only the owner of the image can edit the image";
         User user = (User) session.getAttribute("loggeduser");
         System.out.println("Logged in user :"+user.getId());
@@ -104,8 +102,11 @@ public class ImageController {
         System.out.println("Equals case in user :"+user.getId().equals(image.getUser().getId()));
         if(!(user.getId().equals(image.getUser().getId()))){
             model.addAttribute("editError", error);
+            model.addAttribute("tags", image.getTags());
             return "images/image";
         }
+        String tags = convertTagsToString(image.getTags());
+        model.addAttribute("tags", tags);
         return "images/edit";
     }
 
@@ -150,15 +151,14 @@ public class ImageController {
     @RequestMapping(value = "/deleteImage", method = RequestMethod.DELETE)
     public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId,HttpSession session,Model model) {
         Image image = imageService.getImage(imageId);
-        String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
-        model.addAttribute("tags", tags);
         String error = "Only the owner of the image can delete the image";
         User user = (User) session.getAttribute("loggeduser");
         System.out.println("Logged in user :"+user.getId());
         System.out.println("Image in user :"+image.getUser().getId());
         if(!(user.getId().equals(image.getUser().getId()))){
             model.addAttribute("deleteError", error);
+            model.addAttribute("tags", image.getTags());
             return "images/image";
         }
         imageService.deleteImage(imageId);
@@ -197,14 +197,21 @@ public class ImageController {
     //Returns the string
     private String convertTagsToString(List<Tag> tags) {
         StringBuilder tagString = new StringBuilder();
-
         for (int i = 0; i <= tags.size() - 2; i++) {
             tagString.append(tags.get(i).getName()).append(",");
         }
-
-        Tag lastTag = tags.get(tags.size() - 1);
-        tagString.append(lastTag.getName());
-
+        if(tags.size()>0) {
+            Tag lastTag = tags.get(tags.size() - 1);
+            tagString.append(lastTag.getName());
+        }
+        else
+        {
+            System.out.println("Else Part");
+            Tag newTag=new Tag();
+            newTag.setName("");
+            tagString.append(newTag.getName());
+        }
+        System.out.println("Tag String "+tagString.toString());
         return tagString.toString();
     }
 }
